@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy.orm import relationship
 from db.database import Base
 
 
@@ -10,3 +11,4 @@ class Foods(Base):
     price = Column(Integer)
     qty = Column(Integer)
     availability = Column(Boolean)
+    # orders = relationship("Orders", backref="foods")

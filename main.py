@@ -4,6 +4,8 @@ from db.database import Base, engine
 # step-1
 from routers.foods import food_router
 from routers.restaurants import restaurant_router
+from routers.orders import orders_router
+from routers.customers import customers_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -16,3 +18,5 @@ def read_root():
 
 app.include_router(food_router)
 app.include_router(restaurant_router)
+app.include_router(orders_router)
+app.include_router(customers_router)
