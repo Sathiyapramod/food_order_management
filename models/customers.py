@@ -11,4 +11,3 @@ class Customers(Base):
     contact_no = Column(String)
     email = Column(String)
     location = Column(String)
-    orders = relationship("Orders", back_populates="Customers")
