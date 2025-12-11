@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from schemas.order_items import OrderItemSchema
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from dependencies import connect_to_db
 from models.order_items import OrderItems
@@ -10,14 +11,29 @@ order_items_router = APIRouter(prefix="/order_items", tags=["Order Items"])
 
 @order_items_router.get("/")
 def get_all_order_items(dbs: Session = Depends(connect_to_db)):
-    all_items = dbs.query(OrderItems, Foods).join(Foods).all()
+    statement = (
+        select(OrderItems.id, Foods.food_name, OrderItems.quantity, Foods.price)
+        .select_from(Foods)
+        .join(OrderItems, Foods.id == OrderItems.food_id)
+    )
+    print(statement)
+    
+    # running raw query
+    all_items = dbs.execute(statement=statement)
+    print(all_items)
+    
+    # ?? Option-2
+    # all_items = dbs.query(OrderItems).join(Foods).all()
+    # print(all_items)
+
     result = []
-    for order_items, foods in all_items:
+    # Destructuring Each Tuple in the Row
+    for id, food_name, quantity, price in all_items:
         temp = {
-            "id": order_items.id,
-            "quantity": order_items.quantity,
-            "food_name": foods.food_name,
-            "price": foods.price,
+            "id": id,
+            "quantity": quantity,
+            "food_name": food_name,
+            "price": price,
         }
         result.append(temp)
     return result
