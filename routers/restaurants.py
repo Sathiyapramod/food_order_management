@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from schemas.restaurants import Restaurants_schema
 from models.restaurants import Restaurants
 from sqlalchemy.orm import Session
@@ -7,13 +7,13 @@ from dependencies import connect_to_db
 restaurant_router = APIRouter(prefix="/restaurants", tags=["Restaurants"])
 
 
-@restaurant_router.get("/")
+@restaurant_router.get("/", status_code=status.HTTP_200_OK)
 def get_all_restaurants(dbs: Session = Depends(connect_to_db)):
     restaurants = dbs.query(Restaurants).all()
     return restaurants
 
 
-@restaurant_router.get("/{id}")
+@restaurant_router.get("/{id}", status_code=status.HTTP_200_OK)
 def get_restaurant_by_id(id: int, dbs: Session = Depends(connect_to_db)):
     find_rest = dbs.query(Restaurants).filter(Restaurants.id == id).first()
     if not find_rest:
@@ -21,8 +21,10 @@ def get_restaurant_by_id(id: int, dbs: Session = Depends(connect_to_db)):
     return find_rest
 
 
-@restaurant_router.post("/")
-def create_restaurant(new_rest: Restaurants_schema, dbs: Session = Depends(connect_to_db)):
+@restaurant_router.post("/", status_code=status.HTTP_200_OK)
+def create_restaurant(
+    new_rest: Restaurants_schema, dbs: Session = Depends(connect_to_db)
+):
     valid_entry = Restaurants(
         rest_name=new_rest.rest_name,
         location=new_rest.location,
@@ -38,7 +40,7 @@ def create_restaurant(new_rest: Restaurants_schema, dbs: Session = Depends(conne
     return valid_entry
 
 
-@restaurant_router.put("/{id}")
+@restaurant_router.put("/{id}", status_code=status.HTTP_200_OK)
 def update_restaurant_by_id(
     latest_rest: Restaurants_schema, id: int, dbs: Session = Depends(connect_to_db)
 ):
@@ -59,7 +61,7 @@ def update_restaurant_by_id(
         return {"message": "updated restaurant successfully"}
 
 
-@restaurant_router.delete("/{id}")
+@restaurant_router.delete("/{id}", status_code=status.HTTP_200_OK)
 def delete_restaurant_by_id(id: int, dbs: Session = Depends(connect_to_db)):
     find_rest = dbs.query(Restaurants).filter(Restaurants.id == id).first()
     if not find_rest:

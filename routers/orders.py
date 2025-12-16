@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from dependencies import connect_to_db
 from models.orders import Orders
@@ -9,7 +9,7 @@ orders_router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
 # GET
-@orders_router.get("/")
+@orders_router.get("/", status_code=status.HTTP_200_OK)
 def get_all_orders(dbs: Session = Depends(connect_to_db)):
     orders_list = dbs.query(Orders).all()
     return orders_list
@@ -17,7 +17,7 @@ def get_all_orders(dbs: Session = Depends(connect_to_db)):
 
 # !! ToDo
 # POST
-@orders_router.post("/")
+@orders_router.post("/", status_code=status.HTTP_200_OK)
 def create_an_order(new_order: OrderSchema, dbs: Session = Depends(connect_to_db)):
     adding_an_order = Orders(
         user_id=new_order.user_id,
@@ -34,9 +34,10 @@ def create_an_order(new_order: OrderSchema, dbs: Session = Depends(connect_to_db
 
 
 # GET by ID
-@orders_router.get("/{id}")
-def get_orders_by_id(id:int,dbs: Session = Depends(connect_to_db)):
+@orders_router.get("/{id}", status_code=status.HTTP_200_OK)
+def get_orders_by_id(id: int, dbs: Session = Depends(connect_to_db)):
     find_order = dbs.query(Orders).filter(Orders.id == id).first()
-    
+
+
 # PUT
 # DELETE

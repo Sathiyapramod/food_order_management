@@ -11,4 +11,3 @@ class Foods(Base):
     price = Column(Integer)
     qty = Column(Integer)
     availability = Column(Boolean)
-    # orders = relationship("Orders", backref="foods")

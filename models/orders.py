@@ -4,7 +4,6 @@ from db.database import Base
 
 
 class Orders(Base):
-
     __tablename__ = "orders"
 
     order_id = Column(Integer, primary_key=True)
